@@ -1,11 +1,11 @@
 // algoritmo
 
 // 1. pegar os valores dos inputs OK
-// 2. calcular imc -> valorIMC
-// 3. gerar a classificação IMC
-// 4. organizar os dados do usuário para salvar na lista e gerar a data de cadastro
-// 5. inserir o usuário na lista (salvar no localStorage)
-// 6. função para carregar os usuários (localStorage), chamar ao carregar a página
+// 2. calcular imc -> valorIMC OK
+// 3. gerar a classificação IMC OK
+// 4. organizar os dados do usuário para salvar na lista e gerar a data de cadastro OK
+// 5. inserir o usuário na lista (salvar no localStorage) OK
+// 6. função para carregar os usuários (localStorage), chamar ao carregar a página 
 // 7. renderizar o conteúdo da tabela com os usuários cadastrados
 // 8. botão para limpar os registros
 
@@ -35,6 +35,7 @@ function calcular(event){
     // 5.
 
     carregarUsuarios()
+    // 6.
 
 }
 
@@ -139,6 +140,8 @@ function cadastrarUsuario(dadosUsuario){
 }
 
 function carregarUsuarios(){
+    // 6.
+
     let listaCarregada = []
 
     if(localStorage.getItem("usuariosCadastrados") != null){
@@ -147,16 +150,58 @@ function carregarUsuarios(){
     // está carregando a lista para o array listaCarregada
 
     if(listaCarregada.length === 0){
+        // SE NÃO TIVER USUÁRIO NA LISTA...
         let tabela = document.getElementById("corpo-tabela")
         // pega o id corpo-tabela no html e torna a variável tabela no js
 
-        tabela.innerHTML = "Nenhum usuário cadastrado."
-        // se não tiver nenhum usuário cadastrado, mostrar mensagem
+        tabela.innerHTML = `<tr class="linha-mensagem">
+            <td colspan="6">Nenhum usuário cadastrado 😥</td>
+        <tr> `
+        // se não tiver nenhum usuário cadastrado, mostrar mensagem na tabela
+        // colspan faz o conteúdo ocupar todas as células da linha da tabela (como o mesclar do excel)
+    } else {
+        // SE TEM USUÁRIO, montar conteúdo da tabela
+        montarTabela(listaCarregada)
+        // monta a tabela de acordo com a LISTA CARREGADA
     }
 
     console.log(listaCarregada)
 }
 
 window.addEventListener("DOMContentLoaded", () => carregarUsuarios())
+// chamando a função sempre que a página é recarregada
 // ouvinte de eventos
 // (parâmetro: quando acontece algo, chamar tal função)
+// isso tb chama a função que adiciona o texto "nenhum usuário cadastrado" à tabela SE não tiver nada na lista no localStorage
+
+function montarTabela(listaUsuarios){
+    // 7.
+    
+    let tabela = document.getElementById("corpo-tabela")
+    // pega o id corpo-tabela no html e torna a variável tabela no js
+
+    let template = ""
+    listaUsuarios.forEach(usuario =>{
+        // PARA CADA USUÁRIO CADASTRADO, VAI INSERIR MAIS UM EMBAIXO DO ANTERIOR
+        // na listaUsuarios paraCada usuário cadastrado => irá fazer...
+        template+= `<tr> 
+        <td data-cell="nome">${usuario.nome}</td>
+        <td data-cell="altura">${usuario.altura}</td>
+        <td data-cell="peso">${usuario.peso}</td>
+        <td data-cell="valor do IMC">${usuario.imc.toFixed(2)}</td>
+        <td data-cell="classificação do IMC">${usuario.situacaoImc}</td>
+        <td data-cell="data de cadastro">${usuario.dataCadastro}</td>
+        `
+    })
+
+    tabela.innerHTML = template
+    // dentro da tabela irá inserir um HTML, no caso, o que está no template
+
+}
+
+function limparRegistros(){
+    // 8.
+
+    localStorage.removeItem("usuariosCadastrados")
+    location.reload()
+}
